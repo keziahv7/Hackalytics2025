@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.io import wavfile
 import plotly.graph_objects as go
+from streamlit_lottie import st_lottie
+import requests
 
 class SentimentLearner:
     def __init__(self, feedback_file='sentiment_feedback.json'):
@@ -134,21 +136,123 @@ def record_audio(duration=5):
         st.error(f"Error recording audio: {str(e)}")
         return None
 
+def load_lottieurl(url: str):
+    """Load Lottie animation from URL"""
+    try:
+        r = requests.get(url)
+        if r.status_code != 200:
+            return None
+        return r.json()
+    except:
+        return None
+
+def load_lottiefile(filepath: str):
+    """Load Lottie animation from local file"""
+    try:
+        with open(filepath, "r") as f:
+            return json.load(f)
+    except:
+        return None
+
 def create_audio_interface():
     """Create main audio interface with tabs for recording and upload"""
+    # Add custom CSS
+    st.markdown(
+        """
+        <style>
+        /* Center content */
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        /* Style the button */
+        .stButton > button {
+            margin: 0 auto;
+            display: block;
+            width: 200px;
+            height: 50px;
+            border-radius: 25px;
+            background-color: #ff4b4b;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        /* Button hover effect */
+        .stButton > button:hover {
+            background-color: #ff3333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 75, 75, 0.4);
+        }
+        
+        /* Button active effect */
+        .stButton > button:active {
+            transform: translateY(0px);
+        }
+        
+        /* Animation container */
+        .lottie-container {
+            margin-bottom: 1rem;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
     st.title("Voice Emotion Analysis")
     
     # Create tabs for different functionalities
-    tab1, tab2 = st.tabs(["Upload Audio", "Record Audio"])
+    st.markdown('<div class="center-content">', unsafe_allow_html=True)
+    tab1, tab2 = st.tabs(["Record Audio", "Upload Audio"])
     
     with tab1:
+        # Create a centered container
+        with st.container():
+            col1, col2, col3 = st.columns([1, 2, 1])
+            
+            with col2:
+                st.markdown('<div class="center-content">', unsafe_allow_html=True)
+                
+                # Animation container
+                st.markdown('<div class="lottie-container">', unsafe_allow_html=True)
+                lottie_recording = load_lottiefile("microphone_animation.json")  # Update path
+                if lottie_recording:
+                    st_lottie(
+                        lottie_recording,
+                        height=200,
+                        key="recording_animation"
+                    )
+                st.markdown('</div>', unsafe_allow_html=True)
+                
+                # Recording button with recording state
+                if 'is_recording' not in st.session_state:
+                    st.session_state.is_recording = False
+                
+                button_text = "⏹️ Stop Recording" if st.session_state.is_recording else "🎤 Start Recording"
+                button_key = "stop_recording" if st.session_state.is_recording else "start_recording"
+                
+                if st.button(button_text, key=button_key):
+                    st.session_state.is_recording = not st.session_state.is_recording
+                    if st.session_state.is_recording:
+                        # Start recording
+                        recorded_file = record_audio()
+                        if recorded_file:
+                            st.session_state.last_recording = recorded_file
+                            st.session_state.is_recording = False
+                            # st.experimental_rerun()
+                
+                st.markdown('</div>', unsafe_allow_html=True)
+    
+    with tab2:
         handle_audio_upload_and_playback()
         
-    with tab2:
-        col1, col2 = st.columns([2, 1])
-        with col1:
-            if st.button("🎤 Start Recording", key="start_recording_button"):
-                recorded_file = record_audio()
 
 def get_emotion_color(emotion):
     """Get the appropriate color for each emotion"""
@@ -297,13 +401,13 @@ def display_emotion_buttons(file_id, analysis_results):
         if st.button("😊 Happy", key=f"happy_{file_id}"):
             save_feedback(analysis_results, False, file_id, correct_emotion="HAPPY")
             st.success("Thank you for your feedback!")
-            st.experimental_rerun()
+            # # st.experimental_rerun()
     
     with col2:
         if st.button("😢 Sad", key=f"sad_{file_id}"):
             save_feedback(analysis_results, False, file_id, correct_emotion="SAD")
             st.success("Thank you for your feedback!")
-            st.experimental_rerun()
+            # # st.experimental_rerun()
     
     # Second row
     col3, col4 = st.columns(2)
@@ -311,13 +415,13 @@ def display_emotion_buttons(file_id, analysis_results):
         if st.button("😠 Angry", key=f"angry_{file_id}"):
             save_feedback(analysis_results, False, file_id, correct_emotion="ANGRY")
             st.success("Thank you for your feedback!")
-            st.experimental_rerun()
+            # st.experimental_rerun()
     
     with col4:
         if st.button("😨 Fearful", key=f"fearful_{file_id}"):
             save_feedback(analysis_results, False, file_id, correct_emotion="FEARFUL")
             st.success("Thank you for your feedback!")
-            st.experimental_rerun()
+            # st.experimental_rerun()
     
     # Third row
     col5, col6 = st.columns(2)
@@ -325,13 +429,13 @@ def display_emotion_buttons(file_id, analysis_results):
         if st.button("😌 Calm", key=f"calm_{file_id}"):
             save_feedback(analysis_results, False, file_id, correct_emotion="CALM")
             st.success("Thank you for your feedback!")
-            st.experimental_rerun()
+            # st.experimental_rerun()
     
     with col6:
         if st.button("😐 Neutral", key=f"neutral_{file_id}"):
             save_feedback(analysis_results, False, file_id, correct_emotion="NEUTRAL")
             st.success("Thank you for your feedback!")
-            st.experimental_rerun()
+            # st.experimental_rerun()
 
 def display_feedback_buttons(analysis_results, file_id):
     """Display initial feedback buttons and handle feedback collection"""
@@ -343,18 +447,18 @@ def display_feedback_buttons(analysis_results, file_id):
         if st.button("👍 Correct", key=f"correct_{file_id}"):
             save_feedback(analysis_results, True, file_id)
             st.success("Thank you for your feedback!")
-            st.experimental_rerun()
+            # st.experimental_rerun()
             
     with col2:
         if st.button("👎 Incorrect", key=f"incorrect_{file_id}"):
             st.session_state[f'show_emotion_selection_{file_id}'] = True
-            st.experimental_rerun()
+            # st.experimental_rerun()
             
     with col3:
-        if st.button("❓ Unsure", key=f"unsure_{file_id}"):
+        if st.button("🤔 Unsure", key=f"unsure_{file_id}"):
             save_feedback(analysis_results, None, file_id)
             st.info("Thank you for your feedback!")
-            st.experimental_rerun()
+            # st.experimental_rerun()
             
     # Show emotion selection buttons if needed
     if st.session_state.get(f'show_emotion_selection_{file_id}', False):
@@ -469,17 +573,17 @@ def display_feedback_buttons(analysis_results, file_id):
         if st.button("👍 Correct", key=f"correct_{file_id}"):
             save_feedback(analysis_results, True, file_id)
             st.success("Thank you for your feedback!")
-            # st.experimental_rerun()
+            # # st.experimental_rerun()
             
     with col2:
         if st.button("👎 Incorrect", key=f"incorrect_{file_id}"):
             st.session_state.show_emotion_selection = file_id
             
     with col3:
-        if st.button("❓ Unsure", key=f"unsure_{file_id}"):
+        if st.button("🤔 Unsure", key=f"unsure_{file_id}"):
             save_feedback(analysis_results, None, file_id)
             st.info("Thank you for your feedback!")
-            # st.experimental_rerun()
+            # # st.experimental_rerun()
             
     # Show emotion selection buttons if needed
     if hasattr(st.session_state, 'show_emotion_selection') and st.session_state.show_emotion_selection == file_id:
