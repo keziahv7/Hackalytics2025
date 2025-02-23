@@ -8,7 +8,7 @@ from transformers import pipeline
 app = Flask(__name__)
 
 # ✅ Load Firebase Credentials
-cred = credentials.Certificate(r"C:\Users\kezia\OneDrive\Attachments\MHA\Hackalytics2025\hacklytics25-679dd-firebase-adminsdk-fbsvc-a5d605a4a1.json")
+cred = credentials.Certificate(r"hacklytics25-679dd-firebase-adminsdk-fbsvc-a5d605a4a1.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
@@ -109,7 +109,6 @@ def store_entry():
 
         # AI Model Predicts Stress Level
         stress_level = analyze_stress(text)
-        suggestion = suggest_coping_strategy(stress_level)
 
         # ✅ Store entry in Firestore under the user's collection
         user_collection = db.collection("users").document(user_id).collection("journal_entries")
@@ -155,7 +154,6 @@ def get_entries():
             results.append({
                 "text": entry_data.get("text"),
                 "stress_level": entry_data.get("stress_level"),
-                "suggestion": entry_data.get("suggestion"),
                 "timestamp": entry_data.get("timestamp"),
             })
 

@@ -1,0 +1,52 @@
+.new-entry-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    color: #333;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: none;
+  }
+  
+  .submit-button, .back-button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-button {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .submit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .back-button {
+    background-color: #ccc;
+    color: black;
+  }
+  
+  .back-button:hover {
+    background-color: #999;
+  }
+  
