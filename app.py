@@ -125,6 +125,12 @@ def store_entry():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+# ✅ Function to Verify User Token (Assume Implemented)
+def verify_token(token):
+    # TODO: Implement token verification logic
+    return "user_id_placeholder"  # Replace with actual user ID from Firebase Auth
+
 
 # ✅ Retrieve Entries (Only for Logged-in Users)
 @app.route("/get_entries", methods=["POST"])
@@ -143,7 +149,15 @@ def get_entries():
         # Retrieve user's journal entries
         user_collection = db.collection("users").document(user_id).collection("journal_entries")
         user_entries = user_collection.stream()
-        results = [{"text": entry.to_dict()["text"], "stress_level": entry.to_dict()["stress_level"], "suggestion": entry.to_dict()["suggestion"], "timestamp": entry.to_dict()["timestamp"]} for entry in user_entries]
+        results = []
+        for entry in user_entries:
+            entry_data = entry.to_dict()
+            results.append({
+                "text": entry_data.get("text"),
+                "stress_level": entry_data.get("stress_level"),
+                "suggestion": entry_data.get("suggestion"),
+                "timestamp": entry_data.get("timestamp"),
+            })
 
         if not results:
             return jsonify({"message": "No journal entries found."})
@@ -156,5 +170,8 @@ def get_entries():
 # ✅ Start Flask App
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
 
 
