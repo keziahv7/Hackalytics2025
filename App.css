@@ -1,0 +1,58 @@
+/* General body and layout styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f2; /* light grey background for a calm feel */
+  color: #333; /* soft dark color for text */
+}
+
+.App {
+  text-align: center;
+}
+
+nav {
+  background-color: #276749; /* deep green background */
+  padding: 1rem 0; /* some padding around the nav bar */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* subtle shadow for depth */
+}
+
+nav ul {
+  list-style: none; /* remove list styling */
+  padding: 0;
+  display: flex;
+  justify-content: center; /* center nav items horizontally */
+  align-items: center; /* center nav items vertically */
+}
+
+nav ul li {
+  margin: 0 15px; /* spacing between nav items */
+}
+
+nav a {
+  color: white; /* white text in nav for contrast */
+  text-decoration: none; /* no underlines on links */
+  font-size: 1.2rem; /* slightly larger text */
+}
+
+nav a:hover, nav a:focus {
+  color: #ddd; /* lighter color on hover/focus for feedback */
+}
+
+/* Styling for buttons, particularly the logout button */
+button {
+  background-color: #4CAF50; /* Green background */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px; /* rounded corners */
+}
+
+button:hover {
+  background-color: #45a049; /* slightly darker on hover */
+}
