@@ -93,8 +93,8 @@ def verify_token(token):
         return None
 
 # ✅ Store Journal Entry (Only for Logged-in Users)
-@app.route("/story_entry", methods=["POST"])
-def story_entry():
+@app.route("/store_entry", methods=["POST"])
+def store_entry():
     try:
         data = request.json
         token = data.get("token")
